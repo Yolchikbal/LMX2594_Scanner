@@ -453,27 +453,20 @@ HAL_StatusTypeDef Lmx2594::runFcal(const FreqPlan& /*plan*/)
     else                        lpf = 3;
 
     uint16_t r0 = 0;
-
-    // Константы/резервные биты по умолчанию – берём разумные значения.
-    // Если будешь использовать таблицу из TICS Pro – можно заменить на точные.
     r0 |= (1u << 13);
     r0 |= (1u << 10);
     r0 |= (1u << 4);
 
-    // RAMP_EN=0, VCO_PHASE_SYNC=0
-    // OUT_MUTE=0
-    r0 |= (static_cast<uint16_t>(hpf & 0x3u) << 7); // FCAL_HPFD_ADJ[8:7]
-    r0 |= (static_cast<uint16_t>(lpf & 0x3u) << 5); // FCAL_LPFD_ADJ[6:5]
+    r0 |= (static_cast<uint16_t>(hpf & 0x3u) << 7);
+    r0 |= (static_cast<uint16_t>(lpf & 0x3u) << 5);
 
-    r0 |= (1u << 3); // FCAL_EN=1 – запускаем калибровку VCO
-    r0 |= (1u << 2); // MUXOUT_LD_SEL=1 – MUXout в режиме lock detect
+    r0 |= (1u << 3); // FCAL_EN=1
+    r0 |= (1u << 2); // MUXOUT_LD_SEL=1 (LD на MUXout)
     // RESET=0, POWERDOWN=0
 
     HAL_StatusTypeDef st = writeReg(0, r0);
     if (st != HAL_OK) return st;
 
-    // Калибровка занимает < 50 мкс, подождём с запасом 1 мс
     HAL_Delay(1);
-
     return HAL_OK;
 }

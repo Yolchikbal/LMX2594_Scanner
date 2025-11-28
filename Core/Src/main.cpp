@@ -57,7 +57,7 @@
         1,       // r_pre (PLL_R_PRE)
         1        // r (PLL_R)
     };
-    static Lmx2594 lmx(&hspi2, g_lmxPins , g_lmxRef );
+    static Lmx2594 g_lmx(&hspi2, g_lmxPins , g_lmxRef );
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -103,6 +103,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_GPIO_WritePin  (PW_LMX2594_GPIO_Port, PW_LMX2594_Pin, GPIO_PIN_SET);
   HAL_Delay(500);
+
  // Lmx2594_InitExample();
   /* USER CODE END 2 */
 
@@ -110,17 +111,17 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	    // Инициализация + частота, 4 ГГц
-	    if (lmx.init(4000000000) != HAL_OK) {
-	    	__NOP();
-	        // обработать ошибку
-	    }
-	    HAL_Delay(200);
-	    // Инициализация + частота, 4,002 ГГц
-	    if (lmx.init(4002000000) != HAL_OK) {
-	    	__NOP();
-	        // обработать ошибку
-	    }
+	  // 1) Базовая инициализация тракта OSCin/CP/выходов
+	  if (g_lmx.init() != HAL_OK) {
+	      // ошибка — можно мигать LED
+	      while (1);
+	  }
+
+	  // 2) Установка частоты 5200 МГц
+	  if (g_lmx.setFrequency(5200000000.0) != HAL_OK) {
+	      // не смог посчитать/записать частотный план
+	      while (1);
+	  }
 	    HAL_Delay(200);
     /* USER CODE END WHILE */
 
