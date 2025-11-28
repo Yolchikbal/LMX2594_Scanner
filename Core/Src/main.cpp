@@ -44,20 +44,20 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-    Lmx2594::Pins pins {
+    Lmx2594::Pins g_lmxPins  {
         CS_LO_GPIO_Port, CS_LO_Pin,
         EN_LO_GPIO_Port, EN_LO_Pin
     };
 
     // Допустим, у тебя опорник 100 МГц, без удвоителя, без MULT, R_PRE=1, R=1
-    Lmx2594::RefConfig ref {
+    Lmx2594::RefConfig g_lmxRef  {
         100e6,   // f_ref_Hz
         false,   // osc_doubler (OSC_2X)
         1,       // mult (MULT)
         1,       // r_pre (PLL_R_PRE)
         1        // r (PLL_R)
     };
-    static Lmx2594 lmx(&hspi2, pins, ref);
+    static Lmx2594 lmx(&hspi2, g_lmxPins , g_lmxRef );
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
