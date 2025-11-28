@@ -29,7 +29,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-/**HELLO*/
+/*HELLO ChatGPT*/
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
