@@ -76,8 +76,8 @@ all: main-build
 main-build: LMX2594_V1.elf secondary-outputs
 
 # Tool invocations
-LMX2594_V1.elf: $(OBJS) $(USER_OBJS) C:\Users\alex\Yandex.Disk\proects\WORK_SPACE_STM32\LMX2594_V1\STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "LMX2594_V1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\alex\Yandex.Disk\proects\WORK_SPACE_STM32\LMX2594_V1\STM32G474RETX_FLASH.ld" -Wl,-Map="LMX2594_V1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+LMX2594_V1.elf: $(OBJS) $(USER_OBJS) C:\Users\alex\git\LMX2594_Scanner\STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "LMX2594_V1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\alex\git\LMX2594_Scanner\STM32G474RETX_FLASH.ld" -Wl,-Map="LMX2594_V1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
