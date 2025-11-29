@@ -76,6 +76,50 @@ HAL_StatusTypeDef Lmx2594::init()
     st = writeReg(0, r0);
     if (st != HAL_OK) return st;
 
+
+
+
+    // --- после RESET=1→0 ---
+
+    // R1 – CAL_CLK_DIV: для fOSC=100 МГц нужно 0 (fOSC ≤ 200 МГц)
+    {
+        uint16_t r1 = 0;
+        // CAL_CLK_DIV = 0 (бит[2:0]) – остальные 0
+        HAL_StatusTypeDef st = writeReg(1, r1);
+        if (st != HAL_OK) return st;
+    }
+
+    // R58 – INPIN_IGNORE уже по reset =1, можно явно продублировать
+    {
+        uint16_t r58 = 0;
+        r58 |= (1u << 15);   // INPIN_IGNORE = 1
+        HAL_StatusTypeDef st = writeReg(58, r58);
+        if (st != HAL_OK) return st;
+    }
+
+    // R59 – LD_TYPE: 1 = по Vtune (Lock Detect по напряжению настройки VCO)
+    {
+        uint16_t r59 = 0;
+        r59 |= 1u;           // LD_TYPE = 1
+        HAL_StatusTypeDef st = writeReg(59, r59);
+        if (st != HAL_OK) return st;
+    }
+
+    // R60 – LD_DLY: задержка перед утверждением LD (цикл стейт‑машины)
+    {
+        uint16_t r60 = 1000; // любое разумное значение, TI часто ставит около 1000
+        HAL_StatusTypeDef st = writeReg(60, r60);
+        if (st != HAL_OK) return st;
+    }
+
+
+
+
+
+
+
+
+
     // Настройка входного тракта (OSCin-путь)
     // R9 – OSC_2X
     uint16_t r9 = 0;
@@ -468,5 +512,49 @@ HAL_StatusTypeDef Lmx2594::runFcal(const FreqPlan& /*plan*/)
     if (st != HAL_OK) return st;
 
     HAL_Delay(1);
+    return HAL_OK;
+}
+
+HAL_StatusTypeDef Lmx2594::initFromTics()
+{
+    powerUpHard();          // EN_LO = 1
+    HAL_Delay(2);
+
+    for (size_t i = 0; i < 113; ++i) {
+        uint32_t w = lmx_5200_regs[i];
+        uint8_t buf[3] = {
+            static_cast<uint8_t>((w >> 16) & 0xFF),
+            static_cast<uint8_t>((w >>  8) & 0xFF),
+            static_cast<uint8_t>( w        & 0xFF)
+        };
+
+        csLow();
+        HAL_StatusTypeDef st = HAL_SPI_Transmit(_spi, buf, 3, HAL_MAX_DELAY);
+        csHigh();
+        if (st != HAL_OK) return st;
+    }
+
+    return HAL_OK;
+}
+
+HAL_StatusTypeDef Lmx2594::initFromTics_5210()
+{
+    powerUpHard();          // EN_LO = 1
+    HAL_Delay(2);
+
+    for (size_t i = 0; i < 113; ++i) {
+        uint32_t w = lmx_5210_regs[i];
+        uint8_t buf[3] = {
+            static_cast<uint8_t>((w >> 16) & 0xFF),
+            static_cast<uint8_t>((w >>  8) & 0xFF),
+            static_cast<uint8_t>( w        & 0xFF)
+        };
+
+        csLow();
+        HAL_StatusTypeDef st = HAL_SPI_Transmit(_spi, buf, 3, HAL_MAX_DELAY);
+        csHigh();
+        if (st != HAL_OK) return st;
+    }
+
     return HAL_OK;
 }

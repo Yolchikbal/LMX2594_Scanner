@@ -1,21 +1,21 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2025 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -30,6 +30,7 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 /*HELLO ChatGPT*/
+//#define ON_LMX2594
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -44,20 +45,18 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-    Lmx2594::Pins g_lmxPins  {
-        CS_LO_GPIO_Port, CS_LO_Pin,
-        EN_LO_GPIO_Port, EN_LO_Pin
-    };
+Lmx2594::Pins g_lmxPins {
+CS_LO_GPIO_Port, CS_LO_Pin,
+EN_LO_GPIO_Port, EN_LO_Pin };
 
-    // Допустим, у тебя опорник 100 МГц, без удвоителя, без MULT, R_PRE=1, R=1
-    Lmx2594::RefConfig g_lmxRef  {
-        100e6,   // f_ref_Hz
-        false,   // osc_doubler (OSC_2X)
-        1,       // mult (MULT)
-        1,       // r_pre (PLL_R_PRE)
-        1        // r (PLL_R)
-    };
-    static Lmx2594 g_lmx(&hspi2, g_lmxPins , g_lmxRef );
+// Допустим, у тебя опорник 100 МГц, без удвоителя, без MULT, R_PRE=1, R=1
+Lmx2594::RefConfig g_lmxRef { 100e6,   // f_ref_Hz
+		false,   // osc_doubler (OSC_2X)
+		1,       // mult (MULT)
+		1,       // r_pre (PLL_R_PRE)
+		1        // r (PLL_R)
+};
+static Lmx2594 g_lmx(&hspi2, g_lmxPins, g_lmxRef);
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -101,32 +100,59 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
-  HAL_GPIO_WritePin  (PW_LMX2594_GPIO_Port, PW_LMX2594_Pin, GPIO_PIN_SET);
-  HAL_Delay(500);
-
- // Lmx2594_InitExample();
+#ifdef ON_LMX2594
+	HAL_GPIO_WritePin(PW_LMX2594_GPIO_Port, PW_LMX2594_Pin, GPIO_PIN_SET);
+	HAL_Delay(200);
+	if (g_lmx.initFromTics() != HAL_OK) {
+		// ошибка — можно мигать LED
+		while (1)
+			;
+	}
+	HAL_Delay(200);
+	g_lmx.writeReg(43, 0x0064);  // NUM=100
+	g_lmx.writeReg(0, 0x251C);  // NUM=100
+#endif
+	// 	g_lmx.runFcal();             // R0 с FCAL_EN=1, как в твоём runFcal()
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-	  // 1) Базовая инициализация тракта OSCin/CP/выходов
-	  if (g_lmx.init() != HAL_OK) {
-	      // ошибка — можно мигать LED
-	      while (1);
-	  }
+	while (1) {
 
-	  // 2) Установка частоты 5200 МГц
-	  if (g_lmx.setFrequency(5200000000.0) != HAL_OK) {
-	      // не смог посчитать/записать частотный план
-	      while (1);
-	  }
-	    HAL_Delay(200);
+		/*  if (g_lmx.initFromTics() != HAL_OK) {
+		 // ошибка — можно мигать LED
+		 while (1);
+		 }
+		 HAL_Delay(50);
+
+		 if (g_lmx.initFromTics_5210() != HAL_OK) {
+		 // ошибка — можно мигать LED
+		 while (1);
+		 }*/
+#ifdef ON_LMX2594
+		for (uint16_t var = 0; var < 1000; var += 100) {
+			g_lmx.writeReg(43, var);  // NUM=100
+			g_lmx.writeReg(0, 0x251C);  // NUM=100
+			HAL_Delay(1);
+		}
+#endif
+		// 1) Базовая инициализация тракта OSCin/CP/выходов
+		/*		if (g_lmx.setFrequency(5205000000.0) != HAL_OK) {
+		 // ошибка — можно мигать LED
+		 while (1)
+		 ;
+		 }*/
+
+		// 2) Установка частоты 5200 МГц
+		/* if (g_lmx.setFrequency(5200000000.0) != HAL_OK) {
+		 // не смог посчитать/записать частотный план
+		 while (1);
+		 }*/
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-  }
+	}
   /* USER CODE END 3 */
 }
 
@@ -179,11 +205,10 @@ void SystemClock_Config(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+	/* User can add his own implementation to report the HAL error return state */
+	__disable_irq();
+	while (1) {
+	}
   /* USER CODE END Error_Handler_Debug */
 }
 

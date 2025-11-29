@@ -64,6 +64,10 @@ void Error_Handler(void);
 #define CS_LO_GPIO_Port GPIOB
 #define PW_LMX2594_Pin GPIO_PIN_12
 #define PW_LMX2594_GPIO_Port GPIOA
+#define EN_HMC_1_Pin GPIO_PIN_5
+#define EN_HMC_1_GPIO_Port GPIOB
+#define EN_HMC_2_Pin GPIO_PIN_6
+#define EN_HMC_2_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
