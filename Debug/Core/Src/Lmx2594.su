@@ -1,3 +1,4 @@
+gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
 Lmx2594.cpp:4:1:Lmx2594::Lmx2594(SPI_HandleTypeDef*, const Lmx2594::Pins&, const Lmx2594::RefConfig&)	24	static
 Lmx2594.cpp:15:6:void Lmx2594::csLow()	16	static
 Lmx2594.cpp:20:6:void Lmx2594::csHigh()	16	static
@@ -5,9 +6,11 @@ Lmx2594.cpp:25:6:void Lmx2594::powerDownHard()	16	static
 Lmx2594.cpp:30:6:void Lmx2594::powerUpHard()	16	static
 Lmx2594.cpp:35:19:HAL_StatusTypeDef Lmx2594::writeReg(uint8_t, uint16_t)	24	static
 Lmx2594.cpp:50:19:HAL_StatusTypeDef Lmx2594::writeRegs(const Lmx2594::Reg*, size_t)	32	static
-Lmx2594.cpp:61:19:HAL_StatusTypeDef Lmx2594::init()	72	static
-Lmx2594.cpp:156:19:HAL_StatusTypeDef Lmx2594::init(double)	32	static
-Lmx2594.cpp:165:6:bool Lmx2594::computeFreqPlan(double, Lmx2594::FreqPlan&)	176	static
-Lmx2594.cpp:305:19:HAL_StatusTypeDef Lmx2594::setFrequency(double)	72	static
-Lmx2594.cpp:326:19:HAL_StatusTypeDef Lmx2594::applyFreqPlan(const Lmx2594::FreqPlan&)	48	static
-Lmx2594.cpp:439:19:HAL_StatusTypeDef Lmx2594::runFcal(const Lmx2594::FreqPlan&)	24	static
+Lmx2594.cpp:61:19:HAL_StatusTypeDef Lmx2594::init()	88	static
+Lmx2594.cpp:200:19:HAL_StatusTypeDef Lmx2594::init(double)	32	static
+Lmx2594.cpp:209:6:bool Lmx2594::computeFreqPlan(double, Lmx2594::FreqPlan&)	176	static
+Lmx2594.cpp:349:19:HAL_StatusTypeDef Lmx2594::setFrequency(double)	72	static
+Lmx2594.cpp:370:19:HAL_StatusTypeDef Lmx2594::applyFreqPlan(const Lmx2594::FreqPlan&)	48	static
+Lmx2594.cpp:483:19:HAL_StatusTypeDef Lmx2594::runFcal(const Lmx2594::FreqPlan&)	24	static
+Lmx2594.cpp:518:19:HAL_StatusTypeDef Lmx2594::initFromTics()	32	static
+Lmx2594.cpp:540:19:HAL_StatusTypeDef Lmx2594::initFromTics_5210()	32	static

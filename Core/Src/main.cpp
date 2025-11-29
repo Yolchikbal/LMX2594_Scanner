@@ -112,23 +112,17 @@ int main(void)
 	g_lmx.writeReg(43, 0x0064);  // NUM=100
 	g_lmx.writeReg(0, 0x251C);  // NUM=100
 #endif
-	// 	g_lmx.runFcal();             // R0 с FCAL_EN=1, как в твоём runFcal()
+	HAL_GPIO_TogglePin(EN_HMC_1_GPIO_Port, EN_HMC_1_Pin);
+	HAL_GPIO_TogglePin(EN_HMC_2_GPIO_Port, EN_HMC_2_Pin);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1) {
 
-		/*  if (g_lmx.initFromTics() != HAL_OK) {
-		 // ошибка — можно мигать LED
-		 while (1);
-		 }
-		 HAL_Delay(50);
 
-		 if (g_lmx.initFromTics_5210() != HAL_OK) {
-		 // ошибка — можно мигать LED
-		 while (1);
-		 }*/
+
+		HAL_Delay(5000);
 #ifdef ON_LMX2594
 		for (uint16_t var = 0; var < 1000; var += 100) {
 			g_lmx.writeReg(43, var);  // NUM=100
@@ -136,18 +130,7 @@ int main(void)
 			HAL_Delay(1);
 		}
 #endif
-		// 1) Базовая инициализация тракта OSCin/CP/выходов
-		/*		if (g_lmx.setFrequency(5205000000.0) != HAL_OK) {
-		 // ошибка — можно мигать LED
-		 while (1)
-		 ;
-		 }*/
 
-		// 2) Установка частоты 5200 МГц
-		/* if (g_lmx.setFrequency(5200000000.0) != HAL_OK) {
-		 // не смог посчитать/записать частотный план
-		 while (1);
-		 }*/
 
     /* USER CODE END WHILE */
 
